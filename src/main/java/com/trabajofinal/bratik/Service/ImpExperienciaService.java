@@ -2,39 +2,38 @@
 package com.trabajofinal.bratik.Service;
 
 import com.trabajofinal.bratik.Entity.Experiencia;
-import com.trabajofinal.bratik.Interface.IExperienciaService;
 import com.trabajofinal.bratik.Repository.IExperienciaRepository;
 import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ImpExperienciaService implements IExperienciaService{
+@Transactional
+public class ImpExperienciaService {
     @Autowired IExperienciaRepository iexperienciaRepository;
                      
-    @Override
-    public List<Experiencia> getExperiencia() {
-        List<Experiencia> experiencia = iexperienciaRepository.findAll();
-       return experiencia;
-    }
-
-    @Override
+     public List<Experiencia> list(){
+       return iexperienciaRepository.findAll();
+     }
+     public Optional <Experiencia> getOne (int id){
+       return iexperienciaRepository.findById(id);
+     }
+     public Optional <Experiencia> getBytituloExp (String tituloExp){
+       return iexperienciaRepository.findBytituloExp (tituloExp);
+     }
+     public void save(Experiencia experiencia){
+     iexperienciaRepository.save(experiencia);
+     }
+     public void delete(int id){
+         iexperienciaRepository.deleteById(id);
+     }
+     public boolean existsById(int id){
+         return iexperienciaRepository.existsById(id);
+     }
+     public boolean existsBytituloExp(String tituloExp){
+         return iexperienciaRepository.existsBytituloExp(tituloExp);
+     }
     
-    public void saveExperiencia(Experiencia experiencia) {
-        iexperienciaRepository.save(experiencia);
-    }
-
-    @Override
-    
-    public void deleteExperiencia(Long id) {
-       iexperienciaRepository.deleteById(id);
-    }
-
-    @Override
-    
-    public Experiencia findExperiencia(Long id) {
-        Experiencia experiencia = iexperienciaRepository.findById(id).orElse(null);
-        return experiencia;
-    }
-    
-    }
+ }

@@ -12,10 +12,18 @@ import lombok.Setter;
 @Entity
 public class Experiencia {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idExp;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int idExp;
     private String tituloExp;
-    private int fechaExp;
     private String descripExp;
-    private String imagenExp;
-}
+
+    public Experiencia() {
+    }
+
+    public Experiencia(String tituloExp, int fechaExp, String descripExp, String imagenExp) {
+        this.tituloExp = tituloExp;
+        this.descripExp = descripExp;
+        }
+     }
+    
+

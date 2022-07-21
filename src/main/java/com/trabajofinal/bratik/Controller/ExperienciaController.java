@@ -1,54 +1,38 @@
 
 package com.trabajofinal.bratik.Controller;
 
+import com.trabajofinal.bratik.Dto.dtoExperiencia;
 import com.trabajofinal.bratik.Entity.Experiencia;
 import com.trabajofinal.bratik.Interface.IExperienciaService;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("explab")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ExperienciaController {
     @Autowired IExperienciaService iexperienciaService;
     
-    @GetMapping("experiencias/traer")
-    public List<Experiencia> getExperiencia(){
-        return iexperienciaService.getExperiencia();
+    @GetMapping
+    public ResponseEntity<List<Experiencia>> list(){
+       List<Experiencia> list = iexperienciaService.getExperiencia();
+       return new ResponseEntity(list, HttpStatus.OK);
     }
-    
-    @PostMapping("/experiencias/crear")
-    public String createExperiencia(@RequestBody Experiencia experiencia){
-        iexperienciaService.saveExperiencia(experiencia);
-        return "Experiencia creada correctamente";
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody dtoExperiencia dtoexp){
+        if(StringUtils.isBlank(dtoexp.getTituloExp()))
+            return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
+        if(iexperienciaService.existsByTituloExp(dtoexp.getTituloExp()))
+            return new ResponseEntity (new mensaje("Esa experiencia existe"), HttpStatus.BAD_REQUEST);
     }
-    
-    @DeleteMapping("/experiencias/borrar/{id}")
-    public String deleteExperiencia(@PathVariable Long id){
-        iexperienciaService.deleteExperiencia(id);
-        return "Experiencia eliminada correctamente";
-    }
-    
-    @PutMapping("/experiencias/editar/{id}")
-    public Experiencia editExperiencia(@PathVariable Long id,
-                                @RequestParam("tituloExp")String NuevaExperiencia,
-                                @RequestParam("fechaExp")int NuevaFechaExperiencia,
-                                @RequestParam("descripExp")String NuevaDescripcionExperiencia,
-                                @RequestParam("imgenExp")String NuevaImagenExperiencia){
-        Experiencia experiencia = iexperienciaService.findExperiencia(id);
-        
-        experiencia.setTituloExp(NuevaExperiencia);
-        experiencia.setFechaExp(NuevaFechaExperiencia);
-        experiencia.setDescripExp(NuevaExperiencia);
-        experiencia.setImagenExp(NuevaImagenExperiencia);
-             
-        iexperienciaService.saveExperiencia(experiencia);
-        return experiencia;
-    }
+
 }
